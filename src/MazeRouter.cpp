@@ -54,8 +54,6 @@ CostType SimpleGR::routeMaze(Net &net,
             const Edge &edge = grEdgeArr[edgeId];
             const GCell *nextGCell = (edge.gcell1 == &currentGCell) ? edge.gcell2 : edge.gcell1;
 
-            if (!nextGCell) continue;
-
             // Skip GCells outside the bounding box
             if (!withinBoundingBox(*nextGCell, botleft, topright)) continue;
 
@@ -69,10 +67,7 @@ CostType SimpleGR::routeMaze(Net &net,
             CostType totalCost = pathCost + heuristic(*nextGCell, net.gCellTwo);
 
             // Update priority queue if this path is better
-            if (!priorityQueue.isGCellVsted(nextGCellId)
-                || pathCost < priorityQueue.getGCellData(nextGCellId).pathCost) {
-                priorityQueue.setGCellCost(nextGCellId, totalCost, pathCost, currentGCellId);
-            }
+            priorityQueue.setGCellCost(nextGCellId, totalCost, pathCost, currentGCellId);
         }
     } while (!priorityQueue.isEmpty());
 
