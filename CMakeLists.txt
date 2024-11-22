@@ -13,8 +13,8 @@ include(cmake/CompilerWarnings.cmake)
 gr_set_project_warnings()
 
 # Set compiler flags for performance
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fomit-frame-pointer -O3 -march=native -mtune=native -DNDEBUG")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -O0 --analyze")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fomit-frame-pointer -O3 -march=native -mtune=native -DNDEBUG")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -O0")
 
 # Create compile commands for clangd to look for
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
