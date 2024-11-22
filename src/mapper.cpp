@@ -9,48 +9,48 @@ using std::string;
 
 void usage(const char *exename)
 {
-  cout << "Usage: " << exename << " <benchname> <solnname> [options]" << endl;
-  cout << "Available options:" << endl;
-  cout << "  -o <filename>         Save using base <filename>" << endl;
-  cout << endl;
+    cout << "Usage: " << exename << " <benchname> <solnname> [options]" << endl;
+    cout << "Available options:" << endl;
+    cout << "  -o <filename>         Save using base <filename>" << endl;
+    cout << endl;
 }
 
 int main(int argc, char **argv)
 {
-  if (argc < 3) {
-    usage(argv[0]);
-    return 0;
-  }
-
-  string outputName = "congestion";
-
-  for (int i = 3; i < argc; ++i) {
-    if (argv[i] == string("-h") || argv[i] == string("-help")) {
-      usage(argv[0]);
-      return 0;
-    }
-    if (argv[i] == string("-o")) {
-      if (i + 1 < argc) {
-        outputName = argv[i + 1];
-      } else {
-        cout << "option -o requires an argument" << endl;
+    if (argc < 3) {
         usage(argv[0]);
         return 0;
-      }
     }
-  }
 
-  SimpleGRParams parms;
-  SimpleGR simplegr(parms);
+    string outputName = "congestion";
 
-  simplegr.parseInputMapper(argv[1]);
+    for (int i = 3; i < argc; ++i) {
+        if (argv[i] == string("-h") || argv[i] == string("-help")) {
+            usage(argv[0]);
+            return 0;
+        }
+        if (argv[i] == string("-o")) {
+            if (i + 1 < argc) {
+                outputName = argv[i + 1];
+            } else {
+                cout << "option -o requires an argument" << endl;
+                usage(argv[0]);
+                return 0;
+            }
+        }
+    }
 
-  simplegr.parseSolution(argv[2]);
+    SimpleGRParams parms;
+    SimpleGR simplegr(parms);
 
-  bool noCheckRouted = false;
-  simplegr.printStatistics(noCheckRouted);
+    simplegr.parseInputMapper(argv[1]);
 
-  simplegr.plotXPM(outputName);
+    simplegr.parseSolution(argv[2]);
 
-  return 0;
+    bool noCheckRouted = false;
+    simplegr.printStatistics(noCheckRouted);
+
+    simplegr.plotXPM(outputName);
+
+    return 0;
 }

@@ -13,29 +13,29 @@ void printTitle(void)
 /* $begin main */
 int main(int argc, char **argv)
 {
-  printTitle();
-  // init parameters of SimpleGR
-  SimpleGRParams params(argc, argv);
-  // instantiate an instance of SimpleGR
-  SimpleGR simplegr(params);
+    printTitle();
+    // init parameters of SimpleGR
+    SimpleGRParams params(argc, argv);
+    // instantiate an instance of SimpleGR
+    SimpleGR simplegr(params);
 
-  // read in the nets and create the grid input file
-  simplegr.parseInput();
-  simplegr.printParams();
+    // read in the nets and create the grid input file
+    simplegr.parseInput();
+    simplegr.printParams();
 
-  // perform 3-stage global routing
-  simplegr.initialRouting();
-  simplegr.printStatistics();
+    // perform 3-stage global routing
+    simplegr.initialRouting();
+    simplegr.printStatistics();
 
-  simplegr.doRRR();
-  simplegr.printStatistics();
+    simplegr.doRRR();
+    simplegr.printStatistics();
 
-  simplegr.greedyImprovement();
-  simplegr.printStatistics(true, true);
+    simplegr.greedyImprovement();
+    simplegr.printStatistics(true, true);
 
-  // output solution file
-  simplegr.writeRoutes();
+    // output solution file
+    simplegr.writeRoutes();
 
-  return 0;
+    return 0;
 }
 /* $end main */
