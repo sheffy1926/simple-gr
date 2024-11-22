@@ -1,9 +1,9 @@
 #ifndef _SIMPLEGR_H_
 #define _SIMPLEGR_H_
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 #include <limits>
 #include <algorithm>
 #include <iostream>
@@ -11,20 +11,21 @@
 #include <cassert>
 #include <stdint.h>
 #include <cstring>
-#include <unordered_set>
 
-typedef uint16_t CoordType;
-typedef uint32_t IdType;
-typedef uint32_t LenType;
-typedef uint16_t CapType;
-typedef float CostType;
+using CoordType = uint32_t;
+using IdType = uint32_t;
+using LenType = uint32_t;
+using CapType = uint32_t;
+using CostType = float;
 
-const CostType powMax = 1.e12;
+using namespace std;
+
+const CostType powMax = 1.e12f;
 const CostType powBase = 5.;
 const CostType edgeBase = 2.;
 const CostType viaFactor = 3.;
 const CostType epsilon = 1.;
-const CostType historyIncrement = 0.4;
+const CostType historyIncrement = 0.4f;
 const IdType NULLID = numeric_limits<IdType>::max();
 const CoordType NULLCOORD = numeric_limits < CoordType > ::max();
 const CapType NULLCAP = numeric_limits<CapType>::max();
@@ -220,7 +221,7 @@ class PQueue
 
     void resize(IdType size)
     {
-      IdType oldSize = bits.size();
+      IdType oldSize = static_cast<IdType>(bits.size());
 
       clear();
       bits.resize(size);
@@ -475,7 +476,7 @@ private:
 
     CostType uRatio = static_cast<CostType>(newUsage)/static_cast<CostType>(capacity);
     if (newUsage>capacity) {
-      return edgeBase+edge.historyCost*std::min(powMax, powf(powBase, uRatio-1.0));
+      return edgeBase+edge.historyCost*std::min(powMax, powf(powBase, uRatio-1.0f));
     } else {
       return edgeBase+edge.historyCost*uRatio;
     }
@@ -495,13 +496,16 @@ public:
     static ManhattanCost em;
     return em;
   }
-  // Functor API, returns Manhattan distance
-  inline CostType operator()(const Point a, const Point b) const
-  {
-    return edgeBase
-        *(static_cast<CostType>(abs(a.x-b.x))+static_cast<CostType>(abs(a.y-b.y))
-            +viaFactor*static_cast<CostType>(abs(a.z-b.z)));
-  }
+    // Functor API, returns Manhattan distance
+    // Inserted from nick's project, handles types correctly unlike the original version
+    inline CostType operator()(const Point a, const Point b) const
+    {
+        const auto x_cost = std::abs(static_cast<CostType>(a.x) - static_cast<CostType>(b.x));
+        const auto y_cost = std::abs(static_cast<CostType>(a.y) - static_cast<CostType>(b.y));
+        const auto z_cost = std::abs(static_cast<CostType>(a.z) - static_cast<CostType>(b.z)) * viaFactor;
+
+        return edgeBase * (x_cost + y_cost + z_cost);
+    }
 private:
   ManhattanCost()  //Not Implemented
   {
@@ -529,9 +533,9 @@ public:
   }
 protected:
   inline void set(int * from, size_t byteSize) {
-    checkpoint = (int *) malloc(byteSize);
+    checkpoint = static_cast<int*>(malloc(byteSize));
     memcpy(checkpoint, from, byteSize);
-    len = byteSize/sizeof(int);
+    len = static_cast<int>(byteSize / sizeof(int));
   }
 private:
   int* checkpoint;
