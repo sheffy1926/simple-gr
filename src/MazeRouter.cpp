@@ -63,9 +63,7 @@ CostType SimpleGR::routeMaze(Net& net, bool allowOverflow, const Point &botleft,
       CostType totalCost = pathCost + heuristic(*nextGCell, net.gCellTwo);
 
       // Update priority queue if this path is better
-      if (!priorityQueue.isGCellVsted(nextGCellId) || pathCost < priorityQueue.getGCellData(nextGCellId).pathCost) {
-        priorityQueue.setGCellCost(nextGCellId, totalCost, pathCost, currentGCellId);
-      }
+      priorityQueue.setGCellCost(nextGCellId, totalCost, pathCost, currentGCellId);
     }
   } while (!priorityQueue.isEmpty());
 
@@ -99,8 +97,7 @@ CostType SimpleGR::routeMaze(Net& net, bool allowOverflow, const Point &botleft,
 // Utility function to check if a GCell is within the bounding box
 bool SimpleGR::withinBoundingBox(const GCell &gcell, const Point &botleft, const Point &topright) const {
   return (gcell.x >= botleft.x && gcell.x <= topright.x) &&
-         (gcell.y >= botleft.y && gcell.y <= topright.y) &&
-         (gcell.z >= botleft.z && gcell.z <= topright.z);
+         (gcell.y >= botleft.y && gcell.y <= topright.y); 
 }
 
 // Utility function to get all connected edges for a given GCell
