@@ -39,7 +39,7 @@ CostType SimpleGR::routeMaze(Net &net,
     // the sink gcell is found.
     do {
         // Get the GCell with the lowest cost from the priority queue
-        IdType currentGCellId = priorityQueue.getBestGCell();
+        const IdType currentGCellId = priorityQueue.getBestGCell();
         priorityQueue.rmBestGCell();
 
         // Stop if we reach the sink GCell
@@ -48,7 +48,8 @@ CostType SimpleGR::routeMaze(Net &net,
         const GCell &currentGCell = getGCell(currentGCellId);
 
         // Explore all edges connected to the current GCell
-        for (const IdType edgeId : getConnectedEdges(currentGCell)) {
+        const auto edges = getConnectedEdges(currentGCell);
+        for (const IdType edgeId : edges) {
             if (edgeId == NULLID) continue;
 
             const Edge &edge = grEdgeArr[edgeId];
