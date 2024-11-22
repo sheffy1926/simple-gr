@@ -371,7 +371,7 @@ private:
   // Function to get all connected edges for a given GCell
   vector<IdType> getConnectedEdges(const GCell &gcell) const;
   // Function to find the edge between two connected GCells
-  const Edge& findEdgeBetween(const GCell &g1, const GCell &g2) const;
+  const Edge& findEdgeBetween(const GCell &g1, const GCell &g2);
 
 public:
 
