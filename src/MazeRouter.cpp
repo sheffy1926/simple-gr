@@ -102,7 +102,22 @@ bool SimpleGR::withinBoundingBox(const GCell &gcell, const Point &botleft, const
 
 // Utility function to get all connected edges for a given GCell
 vector<IdType> SimpleGR::getConnectedEdges(const GCell &gcell) const {
-  return {gcell.incX, gcell.decX, gcell.incY, gcell.decY, gcell.incZ, gcell.decZ};
+  std::vector<IdType> edges;
+
+  auto check_cell = [&edges](const IdType edgeId) -> void {
+    if (edgeId != NULLID) {
+      edges.push_back(edgeId);
+    }
+  };
+
+  check_cell(gcell.incX);
+  check_cell(gcell.incY);
+  check_cell(gcell.incZ);
+  check_cell(gcell.decX);
+  check_cell(gcell.decY);
+  check_cell(gcell.decZ);
+
+  return edges;
 }
 
 // Utility function to find the edge between two connected GCells
