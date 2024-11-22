@@ -69,7 +69,10 @@ CostType SimpleGR::routeMaze(Net &net,
             CostType totalCost = pathCost + heuristic(*nextGCell, net.gCellTwo);
 
             // Update priority queue if this path is better
-            priorityQueue.setGCellCost(nextGCellId, totalCost, pathCost, currentGCellId);
+            if (!priorityQueue.isGCellVsted(nextGCellId)
+                || pathCost < priorityQueue.getGCellData(nextGCellId).pathCost) {
+                priorityQueue.setGCellCost(nextGCellId, totalCost, pathCost, currentGCellId);
+            }
         }
     } while (!priorityQueue.isEmpty());
 
@@ -108,55 +111,17 @@ bool SimpleGR::withinBoundingBox(const GCell &gcell, const Point &botleft, const
 // Utility function to get all connected edges for a given GCell
 vector<IdType> SimpleGR::getConnectedEdges(const GCell &gcell) const
 {
-    std::vector<IdType> edges;
-
-    auto check_cell = [&edges](const IdType edgeId) -> void {
-        if (edgeId != NULLID) { edges.push_back(edgeId); }
-    };
-
-    check_cell(gcell.incX);
-    check_cell(gcell.incY);
-    check_cell(gcell.incZ);
-    check_cell(gcell.decX);
-    check_cell(gcell.decY);
-    check_cell(gcell.decZ);
-
-    return edges;
+    return { gcell.incX, gcell.decX, gcell.incY, gcell.decY, gcell.incZ, gcell.decZ };
 }
 
 // Utility function to find the edge between two connected GCells
-const Edge &SimpleGR::findEdgeBetween(const GCell &cell1, const GCell &cell2)
+const Edge &SimpleGR::findEdgeBetween(const GCell &g1, const GCell &g2)
 {
-    const auto cell1_id = getGCellId(cell1);
-    const auto cell2_id = getGCellId(cell2);
-
-    const auto cell1_coord = gcellIdtoCoord(cell1_id);
-    const auto cell2_coord = gcellIdtoCoord(cell2_id);
-
-    IdType edgeId{};
-
-    // check all possible directions the edge could be (as I haven't found a better
-    // way to get the edge id, which we need to get the edge reference)
-    if (cell1_coord.x != cell2_coord.x) {
-        if (cell1_coord.x < cell2_coord.x) {
-            edgeId = cell1.incX;
-        } else {
-            edgeId = cell1.decX;
-        }
-    } else if (cell1_coord.y != cell2_coord.y) {
-        if (cell1_coord.y < cell2_coord.y) {
-            edgeId = cell1.incY;
-        } else {
-            edgeId = cell1.decY;
-        }
-    } else if (cell1_coord.z != cell2_coord.z) {
-        if (cell1_coord.z < cell2_coord.z) {
-            edgeId = cell1.incZ;
-        } else {
-            edgeId = cell1.decZ;
-        }
+    for (IdType edgeId : getConnectedEdges(g1)) {
+        if (edgeId == NULLID) continue;
+        const Edge &edge = grEdgeArr[edgeId];
+        if ((edge.gcell1 == &g1 && edge.gcell2 == &g2) || (edge.gcell1 == &g2 && edge.gcell2 == &g1)) { return edge; }
     }
-
-    auto &edge = grEdgeArr[edgeId];
-    return edge;
+    assert(false && "Edge between GCells not found!");
+    return grEdgeArr[0];// Should not reach here due to the assert
 }
