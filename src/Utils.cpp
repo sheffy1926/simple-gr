@@ -5,8 +5,6 @@
 #include <sys/resource.h>
 #include <vector>
 
-using namespace std;
-
 #include "SimpleGR.h"
 
 double cpuTime(void)
