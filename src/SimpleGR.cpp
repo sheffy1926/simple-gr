@@ -1,8 +1,5 @@
 #include <iostream>
-#include <string>
 #include <vector>
-#include <map>
-#include <limits>
 #include <cmath>
 #include <cassert>
 #include <algorithm>
@@ -28,12 +25,12 @@ CompareByBox::operator()(const IdType a, const IdType b) const
   const Point& bTwo = netb.gCellTwo;
 
   // net A's measurements
-  CostType aWidth  = static_cast<CostType>(abs(aOne.x-aTwo.x));
-  CostType aHeight = static_cast<CostType>(abs(aOne.y-aTwo.y));
+  CostType aWidth  = static_cast<CostType>(abs(static_cast<CostType>(aOne.x)-static_cast<CostType>(aTwo.x)));
+  CostType aHeight = static_cast<CostType>(abs(static_cast<CostType>(aOne.y)-static_cast<CostType>(aTwo.y)));
   pair<CostType, CostType> costA(aWidth + aHeight, min(aWidth, aHeight) / max(aWidth, aHeight));
   // net B's measurements
-  CostType bWidth  = static_cast<CostType>(abs(bOne.x-bTwo.x));
-  CostType bHeight = static_cast<CostType>(abs(bOne.y-bTwo.y));
+  CostType bWidth  = static_cast<CostType>(abs(static_cast<CostType>(bOne.x)-static_cast<CostType>(bTwo.x)));
+  CostType bHeight = static_cast<CostType>(abs(static_cast<CostType>(bOne.y)-static_cast<CostType>(bTwo.y)));
   pair<CostType, CostType> costB(bWidth + bHeight, min(bWidth, bHeight) / max(bWidth, bHeight));
 
   return costA < costB;
@@ -83,7 +80,7 @@ SimpleGR::routeFlatNets(bool allowOverflow, const EdgeCost &func)
       ++flatNetsRouted;
     if (params.verbose) {
       if (net.routed) {
-        printf(" routed with cost %.2f.\n", cost);
+        printf(" routed with cost %.2f.\n", static_cast<double>(cost));
       } else {
         printf(" unable to route.\n");
       }
@@ -320,10 +317,6 @@ void SimpleGR::greedyImprovement(void)
 //@brief: Initial route all nets with minimum effort.
 void SimpleGR::initialRouting(void)
 {
-  unsigned totalNets = 0;
-  for (unsigned i = 0; i < grNetArr.size(); ++i) {
-    totalNets++;
-  }
   cout << "[Initial routing starts]" << endl;
 
   //We want the initial route to be congestion aware, hence

@@ -6,12 +6,8 @@ using namespace std;
 
 void printTitle(void)
 {
-  cout << "SimpleGR " << SimpleGRversion << " (" << sizeof(void*) * 8 << "-bit) Compiled on "
-      << COMPILETIME;
-#ifdef __GNUC__
-  cout << " with GCC " << __GNUC__ << "." << __GNUC_MINOR__ << "." << __GNUC_PATCHLEVEL__;
-#endif
-  cout << endl;
+    std::cout << "SimpleGR " << SimpleGRversion << " (" << sizeof(void *) * 8 << "-bit) Compiled on " << __DATE__
+              << " at " << __TIME__ << "\n\n";
 }
 
 /* $begin main */

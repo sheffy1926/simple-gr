@@ -1,13 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
-#include <limits>
-#include <cmath>
 #include <cassert>
 #include <sys/resource.h>
 #include <cstdlib>
-#include <cstdio>
 
 using namespace std;
 
@@ -46,7 +42,7 @@ void SimpleGR::printStatistics(bool checkRouted, bool final)
       <<100.*static_cast<double>(netsRouted)/static_cast<double>(routableNets)<<"%)"<<endl;
   cout<<stringFinal<<"total length for routed nets "<<routedLen<<endl;
   cout<<stringFinal<<"total number of vias "<<numVias<<endl;
-  cout<<stringFinal<<"total wire length "<<routedLen+viaFactor*numVias<<endl;
+  cout<<stringFinal<<"total wire length "<<static_cast<CostType>(routedLen)+viaFactor*static_cast<CostType>(numVias)<<endl;
   cout<<stringFinal<<"number of overflowing edges is "<<overfullEdges<<" ("
       <<100.*static_cast<double>(overfullEdges)/static_cast<double>(nonViaEdges)<<"%)"<<endl;
   cout<<stringFinal<<"max overflow is "<<maxOverfill<<endl;
@@ -60,7 +56,7 @@ void SimpleGR::printStatisticsLight(void)
   cout<<"total length for routed nets "<<totalSegments<<endl;
   if (numLayers>1) {
     cout<<"total number of vias "<<totalVias<<endl;
-    cout<<"total wire length "<<totalSegments+viaFactor*totalVias<<endl;
+    cout<<"total wire length "<<static_cast<CostType>(totalSegments)+viaFactor*static_cast<CostType>(totalVias)<<endl;
   }
   cout<<"number of overflowing edges is "<<overfullEdges<<" ("
       <<100.*static_cast<double>(overfullEdges)/static_cast<double>(nonViaEdges)<<"%)"<<endl;
@@ -100,7 +96,7 @@ void SimpleGR::buildGrid(void)
   for (CoordType j = 0; j<gcellArrSzY; ++j) {
     for (CoordType i = 0; i<gcellArrSzX-1; ++i) {
       // fill up edge data
-      IdType edgeId = grEdgeArr.size();
+      IdType edgeId = static_cast<IdType>(grEdgeArr.size());
       newEdge.gcell1 = &gcellArr3D[0][j][i];
       newEdge.gcell2 = &gcellArr3D[0][j][i+1];
       newEdge.capacity = horizCaps[0];
@@ -123,7 +119,7 @@ void SimpleGR::buildGrid(void)
   for (CoordType i = 0; i<gcellArrSzX; ++i) {
     for (CoordType j = 0; j<gcellArrSzY-1; ++j) {
       // fill up edge data
-      IdType edgeId = grEdgeArr.size();
+      IdType edgeId = static_cast<IdType>(grEdgeArr.size());
       newEdge.gcell1 = &gcellArr3D[1][j][i];
       newEdge.gcell2 = &gcellArr3D[1][j+1][i];
       newEdge.capacity = vertCaps[1];
@@ -142,15 +138,15 @@ void SimpleGR::buildGrid(void)
     }
   }
 
-  nonViaEdges = grEdgeArr.size();
+  nonViaEdges = static_cast<IdType>(grEdgeArr.size());
 
   // add vias
   for (unsigned i = 0; i<gcellArrSzX; ++i) {
     for (unsigned j = 0; j<gcellArrSzY; ++j) {
-      IdType edgeId = grEdgeArr.size();
+      IdType edgeId = static_cast<IdType>(grEdgeArr.size());
       newEdge.gcell1 = &gcellArr3D[0][j][i];
       newEdge.gcell2 = &gcellArr3D[1][j][i];
-      newEdge.capacity = NULLCAP;     //via capacity is not considered
+      newEdge.capacity = 255U;     //via capacity is not considered
       newEdge.type = VIA;
       newEdge.id = edgeId;
 
@@ -235,7 +231,7 @@ void PQueue::setGCellCost(IdType gcellId, CostType totalCost, CostType pathCost,
       data[gcellId].parentGCell = parent;
 
       // heap up
-      IdType idx = data[gcellId].heapLoc, parent;
+      IdType idx = data[gcellId].heapLoc;
       while (idx>0) {
         parent = (idx-1)/2;
         if (data[heap[idx]].totalCost<data[heap[parent]].totalCost) {
@@ -252,7 +248,7 @@ void PQueue::setGCellCost(IdType gcellId, CostType totalCost, CostType pathCost,
     data[gcellId].totalCost = totalCost;
     data[gcellId].pathCost = pathCost;
     data[gcellId].parentGCell = parent;
-    data[gcellId].heapLoc = heap.size();
+    data[gcellId].heapLoc = static_cast<IdType>(heap.size());
     heap.push_back(gcellId);
     dataValid.setBit(gcellId);
 
@@ -459,7 +455,7 @@ SimpleGRParams::SimpleGRParams(int argc, char **argv)
 //@brief: a simple implementation to report progress of routing
 void SimpleProgRpt::update(unsigned i)
 {
-  int percent = i*100/size;
+  int percent = static_cast<int>(i) * 100 / static_cast<int>(size);
   while (percent > checkpoint[j]) {
     j+=1;
     if (j>=len) {

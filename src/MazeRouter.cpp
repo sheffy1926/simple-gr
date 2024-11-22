@@ -3,9 +3,9 @@
  * Work on this file to complete your maze router
  */
 
-using namespace std;
-
 #include "SimpleGR.h"
+
+using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Implement an A* search based maze routing algorithm

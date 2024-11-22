@@ -153,7 +153,7 @@ public:
   //no usage, capacity or layer info.
   Edge() :
       gcell1(NULL), gcell2(NULL),
-      type(VIA), capacity(0), usage(0), layer(NULLCOORD), id(NULLID), historyCost(1)
+      type(VIA), capacity(0), usage(0), layer(255), id(NULLID), historyCost(1)
   {
   }
   Edge(const Edge &orig) :
@@ -518,7 +518,13 @@ private:
 class SimpleProgRpt
 {
 public:
-  SimpleProgRpt(const unsigned size_) : checkpoint(NULL), len(0), k(0), j(0), size(size_)
+  SimpleProgRpt(const std::size_t size_) : checkpoint(NULL), len(0), k(0), j(0), size(static_cast<unsigned>(size_))
+  {
+    int handwritten[] = {10,30,50,70,90};
+    set(handwritten, sizeof(handwritten));
+    std::cout << "scheduled number of workloads : " << size_ << std::endl;
+  }
+  SimpleProgRpt(const uint32_t size_) : checkpoint(NULL), len(0), k(0), j(0), size(size_)
   {
     int handwritten[] = {10,30,50,70,90};
     set(handwritten, sizeof(handwritten));
@@ -541,7 +547,7 @@ private:
   int* checkpoint;
   int len;
   int k, j;
-  const unsigned size;
+  const uint32_t size;
 };
 
 //@brief: A simple CPU timer API

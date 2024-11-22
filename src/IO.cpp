@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <limits>
 #include <climits>
 #include <algorithm>
 #include <cmath>
@@ -159,7 +158,7 @@ void SimpleGR::parseInput()
     if (newNet.gCellOne!=newNet.gCellTwo) {
       ++routableNets;
 
-      newNet.id = grNetArr.size();
+      newNet.id = static_cast<IdType>(grNetArr.size());
       grNetArr.push_back(newNet);
       netNameToPtrMap[name] = &grNetArr.back();
       netNameArr.push_back(name);

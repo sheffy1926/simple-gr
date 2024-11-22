@@ -1,16 +1,9 @@
 #include <iostream>
 #include <string>
-#include <vector>
-#include <map>
-#include <limits>
 
-using std::vector;
-using std::pair;
 using std::cout;
 using std::endl;
 using std::string;
-using std::map;
-using std::numeric_limits;
 
 #include "SimpleGR.h"
 
